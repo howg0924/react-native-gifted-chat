@@ -17,6 +17,7 @@ export default function MessageImage({
       <Lightbox
         activeProps={{
           style: styles.imageActive,
+          source: { uri: currentMessage.imageFullSize || currentMessage.image },
         }}
         {...lightboxProps}
       >
