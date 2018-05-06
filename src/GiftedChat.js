@@ -8,7 +8,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Animated, Platform, StyleSheet, View } from 'react-native';
+import { Animated, Keyboard, Platform, StyleSheet, View } from 'react-native';
 
 import ActionSheet from '@expo/react-native-action-sheet';
 import moment from 'moment';
@@ -52,6 +52,10 @@ class GiftedChat extends React.Component {
     this._isFirstLayout = true;
     this._locale = 'en';
     this._messages = [];
+    this._keyboardWillShowListener = undefined;
+    this._keyboardDidShowListener = undefined;
+    this._keyboardWillHideListener = undefined;
+    this._keyboardDidHideListener = undefined;
 
     this.state = {
       isInitialized: false, // initialization will calculate maxHeight before rendering the chat
@@ -74,10 +78,6 @@ class GiftedChat extends React.Component {
     this.invertibleScrollViewProps = {
       inverted: this.props.inverted,
       keyboardShouldPersistTaps: this.props.keyboardShouldPersistTaps,
-      onKeyboardWillShow: this.onKeyboardWillShow,
-      onKeyboardWillHide: this.onKeyboardWillHide,
-      onKeyboardDidShow: this.onKeyboardDidShow,
-      onKeyboardDidHide: this.onKeyboardDidHide,
     };
   }
 
@@ -103,6 +103,11 @@ class GiftedChat extends React.Component {
   }
 
   componentWillMount() {
+    this._keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow);
+    this._keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow);
+    this._keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide);
+    this._keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide);
+
     const { messages, text } = this.props;
     this.setIsMounted(true);
     this.initLocale();
@@ -111,6 +116,11 @@ class GiftedChat extends React.Component {
   }
 
   componentWillUnmount() {
+    this._keyboardWillShowListener.remove();
+    this._keyboardDidShowListener.remove();
+    this._keyboardWillHideListener.remove();
+    this._keyboardDidHideListener.remove();
+
     this.setIsMounted(false);
   }
 
