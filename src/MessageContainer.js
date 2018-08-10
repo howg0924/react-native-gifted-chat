@@ -89,9 +89,6 @@ export default class MessageContainer extends React.PureComponent {
   }
 
   render() {
-    if (this.props.messages.length === 0) {
-      return <View style={styles.container} />;
-    }
     return (
       <View style={styles.container}>
         <FlatList
