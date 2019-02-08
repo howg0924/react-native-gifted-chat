@@ -5,8 +5,8 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 import Color from './Color';
 
-export default function Send({ text, containerStyle, onSend, children, textStyle, label }) {
-  if (text.trim().length > 0) {
+export default function Send({ text, containerStyle, onSend, children, textStyle, label, alwaysShowSend, disabled }) {
+  if (alwaysShowSend || text.trim().length > 0) {
     return (
       <TouchableOpacity
         testID="send"
@@ -17,6 +17,7 @@ export default function Send({ text, containerStyle, onSend, children, textStyle
           onSend({ text: text.trim() }, true);
         }}
         accessibilityTraits="button"
+        disabled={disabled}
       >
         <View>{children || <Text style={[styles.text, textStyle]}>{label}</Text>}</View>
       </TouchableOpacity>
@@ -48,6 +49,8 @@ Send.defaultProps = {
   containerStyle: {},
   textStyle: {},
   children: null,
+  alwaysShowSend: false,
+  disabled: false,
 };
 
 Send.propTypes = {
@@ -57,4 +60,6 @@ Send.propTypes = {
   containerStyle: ViewPropTypes.style,
   textStyle: Text.propTypes.style,
   children: PropTypes.element,
+  alwaysShowSend: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
