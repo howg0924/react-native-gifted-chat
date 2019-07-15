@@ -268,10 +268,15 @@ class GiftedChat extends React.Component {
     this.setBottomOffset(this.props.bottomOffset);
     const newMessagesContainerHeight = this.getMessagesContainerHeightWithKeyboard();
     if (this.props.isAnimated === true) {
-      Animated.timing(this.state.messagesContainerHeight, {
-        toValue: newMessagesContainerHeight,
-        duration: 210,
-      }).start();
+      if (!this.state.messagesContainerHeight)
+        this.setState({
+          messagesContainerHeight: new Animated.Value(newMessagesContainerHeight),
+        });
+      else
+        Animated.timing(this.state.messagesContainerHeight, {
+          toValue: newMessagesContainerHeight,
+          duration: 210,
+        }).start();
     } else {
       this.setState({
         messagesContainerHeight: newMessagesContainerHeight,
@@ -285,10 +290,15 @@ class GiftedChat extends React.Component {
     this.setBottomOffset(0);
     const newMessagesContainerHeight = this.getBasicMessagesContainerHeight();
     if (this.props.isAnimated === true) {
-      Animated.timing(this.state.messagesContainerHeight, {
-        toValue: newMessagesContainerHeight,
-        duration: 210,
-      }).start();
+      if (!this.state.messagesContainerHeight)
+        this.setState({
+          messagesContainerHeight: new Animated.Value(newMessagesContainerHeight),
+        });
+      else
+        Animated.timing(this.state.messagesContainerHeight, {
+          toValue: newMessagesContainerHeight,
+          duration: 210,
+        }).start();
     } else {
       this.setState({
         messagesContainerHeight: newMessagesContainerHeight,
