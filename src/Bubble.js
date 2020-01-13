@@ -83,6 +83,7 @@ export default class Bubble extends React.PureComponent {
     if (this.props.currentMessage.image) {
       const { containerStyle, wrapperStyle, ...messageImageProps } = this.props;
       if (this.props.renderMessageImage) {
+        messageImageProps.context = this.context;
         return this.props.renderMessageImage(messageImageProps);
       }
       return <MessageImage {...messageImageProps} />;
