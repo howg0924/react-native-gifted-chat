@@ -48,6 +48,13 @@ export default class InputToolbar extends React.Component {
     }
   }
 
+  renderRepliedMessage() {
+    if (this.props.renderRepliedMessage)
+      return this.props.renderRepliedMessage(this.props);
+    else
+      return null;
+  }
+
   renderActions() {
     if (this.props.renderActions) {
       return this.props.renderActions(this.props);
@@ -84,6 +91,7 @@ export default class InputToolbar extends React.Component {
   render() {
     return (
       <View style={[styles.container, this.props.containerStyle, this.props.inputToolbarStyle, { position: this.state.position }]}>
+        {this.renderRepliedMessage()}
         <View style={[styles.primary, this.props.primaryStyle, { height: this.props.composerHeight }]}>
           {this.renderActions()}
           {this.renderComposer()}

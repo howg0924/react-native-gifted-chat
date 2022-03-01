@@ -123,7 +123,9 @@ export default class Bubble extends React.PureComponent {
 
   renderCustomView() {
     if (this.props.renderCustomView) {
-      return this.props.renderCustomView(this.props);
+      const customViewProps = {...this.props};
+      customViewProps.context = this.context;
+      return this.props.renderCustomView(customViewProps);
     }
     return null;
   }
