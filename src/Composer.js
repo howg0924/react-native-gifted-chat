@@ -30,6 +30,8 @@ export default class Composer extends React.Component {
   }
 
   render() {
+    const bUseDefaultValue = (Platform.OS === 'android' && Platform.Version >= 33);
+
     return (
       <TextInput
         testID={this.props.placeholder}
@@ -43,7 +45,8 @@ export default class Composer extends React.Component {
         onChangeText={(text) => this.onChangeText(text)}
         style={[styles.textInput, this.props.textInputStyle]}
         autoFocus={this.props.textInputAutoFocus}
-        value={this.props.text}
+        value={bUseDefaultValue ? undefined : this.props.text}
+        defaultValue={bUseDefaultValue ? this.props.text : undefined}
         enablesReturnKeyAutomatically
         underlineColorAndroid="transparent"
         keyboardAppearance={this.props.keyboardAppearance}
