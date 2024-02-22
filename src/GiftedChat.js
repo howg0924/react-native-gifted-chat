@@ -40,7 +40,6 @@ import {
 } from './Constant';
 
 class GiftedChat extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -51,7 +50,6 @@ class GiftedChat extends React.Component {
     this._maxHeight = null;
     this._isFirstLayout = true;
     this._locale = 'en';
-    this._messages = [];
     this._keyboardWillShowListener = undefined;
     this._keyboardDidShowListener = undefined;
     this._keyboardWillHideListener = undefined;
@@ -62,6 +60,8 @@ class GiftedChat extends React.Component {
       composerHeight: MIN_COMPOSER_HEIGHT,
       messagesContainerHeight: null,
       typingDisabled: false,
+      text: props.text,
+      messages: props.messages || [],
     };
 
     this.onKeyboardWillShow = this.onKeyboardWillShow.bind(this);
@@ -79,6 +79,14 @@ class GiftedChat extends React.Component {
       inverted: this.props.inverted,
       keyboardShouldPersistTaps: this.props.keyboardShouldPersistTaps,
     };
+
+    this._keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow);
+    this._keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow);
+    this._keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide);
+    this._keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide);
+
+    this.setIsMounted(true);
+    this.initLocale();
   }
 
   static append(currentMessages = [], messages, inverted = true) {
@@ -102,19 +110,6 @@ class GiftedChat extends React.Component {
     };
   }
 
-  componentWillMount() {
-    this._keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow);
-    this._keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow);
-    this._keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide);
-    this._keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide);
-
-    const { messages, text } = this.props;
-    this.setIsMounted(true);
-    this.initLocale();
-    this.setMessages(messages || []);
-    this.setTextFromProp(text);
-  }
-
   componentWillUnmount() {
     this._keyboardWillShowListener.remove();
     this._keyboardDidShowListener.remove();
@@ -124,19 +119,23 @@ class GiftedChat extends React.Component {
     this.setIsMounted(false);
   }
 
-  componentWillReceiveProps(nextProps = {}) {
-    const { messages, text } = nextProps;
-    this.setMessages(messages || []);
-    this.setTextFromProp(text);
-
-    if (this.props.minInputToolbarHeight !== nextProps.minInputToolbarHeight) {
-      const inputToolbarHeight = this.state.composerHeight + (nextProps.minInputToolbarHeight - MIN_COMPOSER_HEIGHT);
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.messages !== prevProps.messages) {
+      this.setState({
+        messages: this.props.messages || [],
+      });
+    };
+    if (this.props.text !== prevProps.text) {
+      this.setTextFromProp(this.props.text);
+    };
+    if (this.props.minInputToolbarHeight !== prevProps.minInputToolbarHeight) {
+      const inputToolbarHeight = this.state.composerHeight + (this.props.minInputToolbarHeight - MIN_COMPOSER_HEIGHT);
       const newMessagesContainerHeight = this.getMaxHeight() - inputToolbarHeight - this.getKeyboardHeight() + this.getBottomOffset();
       this.setState({
         messagesContainerHeight: this.prepareMessagesContainerHeight(newMessagesContainerHeight),
       });
-    }
-  }
+    };
+  };
 
   initLocale() {
     if (this.props.locale === null || moment.locales().indexOf(this.props.locale) === -1) {
@@ -166,14 +165,6 @@ class GiftedChat extends React.Component {
       return fallback;
     }
     return this.props.text;
-  }
-
-  setMessages(messages) {
-    this._messages = messages;
-  }
-
-  getMessages() {
-    return this._messages;
   }
 
   setMaxHeight(height) {
@@ -327,7 +318,6 @@ class GiftedChat extends React.Component {
     this._messageContainerRef.scrollTo({ y: 0, animated });
   }
 
-
   renderMessages() {
     const AnimatedView = this.props.isAnimated === true ? Animated.View : View;
     return (
@@ -339,7 +329,7 @@ class GiftedChat extends React.Component {
         <MessageContainer
           {...this.props}
           invertibleScrollViewProps={this.invertibleScrollViewProps}
-          messages={this.getMessages()}
+          messages={this.state.messages}
           ref={(component) => (this._messageContainerRef = component)}
 
         />

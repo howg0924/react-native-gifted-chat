@@ -20,9 +20,7 @@ export default class InputToolbar extends React.Component {
     this.state = {
       position: 'absolute',
     };
-  }
 
-  componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
   }
