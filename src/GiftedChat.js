@@ -267,6 +267,7 @@ class GiftedChat extends React.Component {
         Animated.timing(this.state.messagesContainerHeight, {
           toValue: newMessagesContainerHeight,
           duration: 210,
+          useNativeDriver: false,
         }).start();
     } else {
       this.setState({
@@ -289,6 +290,7 @@ class GiftedChat extends React.Component {
         Animated.timing(this.state.messagesContainerHeight, {
           toValue: newMessagesContainerHeight,
           duration: 210,
+          useNativeDriver: false,
         }).start();
     } else {
       this.setState({
