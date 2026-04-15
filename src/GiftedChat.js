@@ -30,6 +30,7 @@ import MessageContainer from './MessageContainer';
 import Send from './Send';
 import Time from './Time';
 import GiftedAvatar from './GiftedAvatar';
+import GiftedChatContext from './GiftedChatContext';
 
 import {
   MIN_COMPOSER_HEIGHT,
@@ -85,6 +86,11 @@ class GiftedChat extends React.Component {
     this._keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide);
     this._keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide);
 
+    this._contextValue = {
+      actionSheet: () => this._actionSheetRef,
+      getLocale: this.getLocale,
+    };
+
     this.setIsMounted(true);
     this.initLocale();
   }
@@ -101,13 +107,6 @@ class GiftedChat extends React.Component {
       messages = [messages];
     }
     return inverted ? currentMessages.concat(messages) : messages.concat(currentMessages);
-  }
-
-  getChildContext() {
-    return {
-      actionSheet: () => this._actionSheetRef,
-      getLocale: this.getLocale,
-    };
   }
 
   componentWillUnmount() {
@@ -492,18 +491,22 @@ class GiftedChat extends React.Component {
   render() {
     if (this.state.isInitialized === true) {
       return (
-        <ActionSheet ref={(component) => (this._actionSheetRef = component)}>
-          <View style={styles.container} onLayout={this.onMainViewLayout}>
-            {this.renderMessages()}
-            {this.renderInputToolbar()}
-          </View>
-        </ActionSheet>
+        <GiftedChatContext.Provider value={this._contextValue}>
+          <ActionSheet ref={(component) => (this._actionSheetRef = component)}>
+            <View style={styles.container} onLayout={this.onMainViewLayout}>
+              {this.renderMessages()}
+              {this.renderInputToolbar()}
+            </View>
+          </ActionSheet>
+        </GiftedChatContext.Provider>
       );
     }
     return (
-      <View style={styles.container} onLayout={this.onInitialLayoutViewLayout}>
-        {this.renderLoading()}
-      </View>
+      <GiftedChatContext.Provider value={this._contextValue}>
+        <View style={styles.container} onLayout={this.onInitialLayoutViewLayout}>
+          {this.renderLoading()}
+        </View>
+      </GiftedChatContext.Provider>
     );
   }
 
@@ -514,11 +517,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-GiftedChat.childContextTypes = {
-  actionSheet: PropTypes.func,
-  getLocale: PropTypes.func,
-};
 
 GiftedChat.defaultProps = {
   messages: [],

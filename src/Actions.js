@@ -4,8 +4,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 import Color from './Color';
+import GiftedChatContext from './GiftedChatContext';
 
 export default class Actions extends React.Component {
+
+  static contextType = GiftedChatContext;
 
   constructor(props) {
     super(props);
@@ -81,10 +84,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-Actions.contextTypes = {
-  actionSheet: PropTypes.func,
-};
 
 Actions.defaultProps = {
   onSend: () => { },

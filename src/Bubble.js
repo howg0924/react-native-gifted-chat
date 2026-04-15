@@ -8,10 +8,13 @@ import MessageText from './MessageText';
 import MessageImage from './MessageImage';
 import Time from './Time';
 import Color from './Color';
+import GiftedChatContext from './GiftedChatContext';
 
 import { isSameUser, isSameDay } from './utils';
 
 export default class Bubble extends React.PureComponent {
+
+  static contextType = GiftedChatContext;
 
   constructor(props) {
     super(props);
@@ -215,10 +218,6 @@ const styles = {
     flexDirection: 'row',
     marginRight: 10,
   },
-};
-
-Bubble.contextTypes = {
-  actionSheet: PropTypes.func,
 };
 
 Bubble.defaultProps = {

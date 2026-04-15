@@ -7,9 +7,11 @@ import { StyleSheet, Text, View, ViewPropTypes } from 'react-native';
 import moment from 'moment';
 
 import Color from './Color';
+import GiftedChatContext from './GiftedChatContext';
 import { TIME_FORMAT } from './Constant';
 
-export default function Time({ position, containerStyle, currentMessage, timeFormat, textStyle }, context) {
+export default function Time({ position, containerStyle, currentMessage, timeFormat, textStyle }) {
+  const context = React.useContext(GiftedChatContext);
   return (
     <View style={[styles[position].container, containerStyle[position]]}>
       <Text style={[styles[position].text, textStyle[position]]}>
@@ -52,10 +54,6 @@ const styles = {
       ...textStyle,
     },
   }),
-};
-
-Time.contextTypes = {
-  getLocale: PropTypes.func,
 };
 
 Time.defaultProps = {

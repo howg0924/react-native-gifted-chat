@@ -6,14 +6,15 @@ import { StyleSheet, Text, View, ViewPropTypes } from 'react-native';
 import moment from 'moment';
 
 import Color from './Color';
+import GiftedChatContext from './GiftedChatContext';
 
 import { isSameDay } from './utils';
 import { DATE_FORMAT } from './Constant';
 
 export default function Day(
   { dateFormat, currentMessage, previousMessage, containerStyle, wrapperStyle, textStyle },
-  context,
 ) {
+  const context = React.useContext(GiftedChatContext);
   if (!isSameDay(currentMessage, previousMessage)) {
     return (
       <View style={[styles.container, containerStyle]}>
@@ -45,10 +46,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-Day.contextTypes = {
-  getLocale: PropTypes.func,
-};
 
 Day.defaultProps = {
   currentMessage: {

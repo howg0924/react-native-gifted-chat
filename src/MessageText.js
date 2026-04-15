@@ -6,9 +6,13 @@ import { Linking, StyleSheet, Text, View, ViewPropTypes } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import Communications from 'react-native-communications';
 
+import GiftedChatContext from './GiftedChatContext';
+
 const WWW_URL_PATTERN = /^www\./i;
 
 export default class MessageText extends React.Component {
+
+  static contextType = GiftedChatContext;
 
   constructor(props) {
     super(props);
@@ -123,10 +127,6 @@ const styles = {
       textDecorationLine: 'underline',
     },
   }),
-};
-
-MessageText.contextTypes = {
-  actionSheet: PropTypes.func,
 };
 
 MessageText.defaultProps = {
