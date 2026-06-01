@@ -71,7 +71,6 @@ export default class MessageContainer extends React.PureComponent {
 
     const messageProps = {
       ...restProps,
-      key: item._id,
       currentMessage: item,
       previousMessage,
       nextMessage,
@@ -79,9 +78,9 @@ export default class MessageContainer extends React.PureComponent {
     };
 
     if (this.props.renderMessage) {
-      return this.props.renderMessage(messageProps);
+      return this.props.renderMessage({ ...messageProps, key: item._id });
     }
-    return <Message {...messageProps} />;
+    return <Message key={item._id} {...messageProps} />;
   }
 
   renderHeaderWrapper() {
