@@ -10,7 +10,13 @@ import Color from './Color';
 import GiftedChatContext from './GiftedChatContext';
 import { TIME_FORMAT } from './Constant';
 
-export default function Time({ position, containerStyle, currentMessage, timeFormat, textStyle }) {
+export default function Time({
+  position = 'left',
+  containerStyle = {},
+  currentMessage = { createdAt: null },
+  timeFormat = TIME_FORMAT,
+  textStyle = {},
+}) {
   const context = React.useContext(GiftedChatContext);
   return (
     <View style={[styles[position].container, containerStyle[position]]}>
@@ -54,16 +60,6 @@ const styles = {
       ...textStyle,
     },
   }),
-};
-
-Time.defaultProps = {
-  position: 'left',
-  currentMessage: {
-    createdAt: null,
-  },
-  containerStyle: {},
-  textStyle: {},
-  timeFormat: TIME_FORMAT,
 };
 
 Time.propTypes = {

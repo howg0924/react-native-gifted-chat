@@ -11,9 +11,14 @@ import GiftedChatContext from './GiftedChatContext';
 import { isSameDay } from './utils';
 import { DATE_FORMAT } from './Constant';
 
-export default function Day(
-  { dateFormat, currentMessage, previousMessage, containerStyle, wrapperStyle, textStyle },
-) {
+export default function Day({
+  dateFormat = DATE_FORMAT,
+  currentMessage = { createdAt: null },
+  previousMessage = {},
+  containerStyle = {},
+  wrapperStyle = {},
+  textStyle = {},
+}) {
   const context = React.useContext(GiftedChatContext);
   if (!isSameDay(currentMessage, previousMessage)) {
     return (
@@ -46,18 +51,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-Day.defaultProps = {
-  currentMessage: {
-    // TODO: test if crash when createdAt === null
-    createdAt: null,
-  },
-  previousMessage: {},
-  containerStyle: {},
-  wrapperStyle: {},
-  textStyle: {},
-  dateFormat: DATE_FORMAT,
-};
 
 Day.propTypes = {
   currentMessage: PropTypes.object,

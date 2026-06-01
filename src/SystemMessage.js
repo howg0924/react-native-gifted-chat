@@ -5,7 +5,12 @@ import { StyleSheet, Text, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Color from './Color';
 
-export default function SystemMessage({ currentMessage, containerStyle, wrapperStyle, textStyle }) {
+export default function SystemMessage({
+  currentMessage = { system: false },
+  containerStyle = {},
+  wrapperStyle = {},
+  textStyle = {},
+}) {
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.wrapper, wrapperStyle]}>
@@ -30,15 +35,6 @@ const styles = StyleSheet.create({
     fontWeight: '300',
   },
 });
-
-SystemMessage.defaultProps = {
-  currentMessage: {
-    system: false,
-  },
-  containerStyle: {},
-  wrapperStyle: {},
-  textStyle: {},
-};
 
 SystemMessage.propTypes = {
   currentMessage: PropTypes.object,
