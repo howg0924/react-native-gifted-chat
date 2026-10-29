@@ -252,6 +252,42 @@ class GiftedChat extends React.Component {
     return value;
   }
 
+  // 交給原生層的訊息區高度在 iOS 一律無條件捨去成整數點。
+  //
+  // 【問題】
+  // iOS 26 以上，UIScrollView 有「捲動邊緣效果」（UIScrollEdgeEffect）。訊息區的高度若不是整數點，而且小數部分
+  // 落在某個區間（3x 螢幕上換算成像素後，高度像素數除以 3 餘 1，例如 643.333 點），UIKit 會替這個倒置（scaleY -1）
+  // 的列表啟用邊緣效果：一個與整個捲動區同大、內含 CABackdropLayer 的 view。使用者開了「減少透明度」時，那層是不透明
+  // 的，整個訊息列表就被蓋住，看起來是一片空白；鍵盤彈出時高度改變、邊緣效果消失，訊息才暫時出現。
+  // 平常高度是整數所以碰不到；iPhone 14 Plus 等瀏海機型開「螢幕縮放：放大文字」後，safe area 變成小數
+  // （上 41、下 29.67），這裡算出來的高度就剛好是 643.333。
+  //
+  // 【作法】
+  // 只在套用到 style 的地方捨去，不動 state 與其他計算。鍵盤動畫是 JS 驅動（useNativeDriver: false），動畫中間每一幀的
+  // 高度都是小數，所以 Animated 值要用 value - (value % 1) 每一幀捨去；加 0.001 是避免 644 因浮點誤差算成 643.9999999
+  // 而少一點。捨去最多少 1 點，輸入列會跟著上移最多 1 點。
+  // 只有 iOS 會碰到這個問題（Android 沒有 UIScrollEdgeEffect，而且 Android 的高度是 px / density 的小數 dp，
+  // 捨去只會平白少一點），所以非 iOS 原樣回傳。
+  getWholePointMessagesContainerHeight() {
+    const height = this.state.messagesContainerHeight;
+    if (Platform.OS !== 'ios') {
+      return height;
+    }
+    if (typeof height === 'number') {
+      return Math.floor(height + 0.001);
+    }
+    if (height && typeof height.interpolate === 'function') {
+      // state 裡的 Animated.Value 常被換成新的，同一個值只建一次衍生節點，避免每次 render 都建新的。
+      if (this._wholePointHeightSource !== height) {
+        const shifted = Animated.add(height, 0.001);
+        this._wholePointHeightSource = height;
+        this._wholePointHeight = Animated.subtract(shifted, Animated.modulo(shifted, 1));
+      }
+      return this._wholePointHeight;
+    }
+    return height;
+  }
+
   onKeyboardWillShow(e) {
     this.setIsTypingDisabled(true);
     this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height);
@@ -324,7 +360,8 @@ class GiftedChat extends React.Component {
     return (
       <AnimatedView
         style={{
-          height: this.state.messagesContainerHeight,
+          // 見 getWholePointMessagesContainerHeight()。
+          height: this.getWholePointMessagesContainerHeight(),
         }}
       >
         <MessageContainer
