@@ -1,4 +1,8 @@
 .DS_Store
+._*
+.AppleDouble
+.LSOverride
+Icon[[:cntrl:]]
 node_modules/
 .expo/
 npm-debug.log
